@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wasm test</title>
+  </head>
+  <body>
+    <canvas id="image" width="800" height="600" style="border: 1px solid #000000">
+    </canvas>
+    <script>
+      var memory, allocate;
+      var canvas = document.getElementById("image");
+      var ctx = canvas.getContext("2d", {
+        willReadFrequently: true,
+      });
+
+      function parseZigString(pointer) {
+        const len_slice = new Uint8Array(memory.buffer, pointer, 4);
+        const len =
+          len_slice[0] +
+          (1 << 8) * len_slice[1] +
+          (1 << 16) * len_slice[2] +
+          (1 << 24) * len_slice[3];
+        const location_str = new Uint8Array(memory.buffer, pointer + 4, 4);
+        const loc =
+          location_str[0] +
+          (1 << 8) * location_str[1] +
+          (1 << 16) * location_str[2] +
+          (1 << 24) * location_str[3];
+        const slice = new Uint8Array(memory.buffer, loc, len);
+
+        return new TextDecoder().decode(slice);
+      }
+
+      var active_brush = 1;
+
+
+      const importObject = {
+        web: {
+          _print_str: (str) => {
+            const decoded = parseZigString(str);
+            console.log(decoded);
+          },
+          DrawRectangle: (x, y, width, height, color) => {
+          switch(color) {
+            case 0: 
+            ctx.fillStyle="rgb(0,0,0)"
+            break;
+             case 1: 
+            ctx.fillStyle="rgb(255,255,0)"
+            break;         
+              case 2: 
+            ctx.fillStyle="rgb(255,0,0)"
+            break; 
+              case 3: 
+            ctx.fillStyle="rgb(255,0,255)"
+            break;
+ case 4:
+            ctx.fillStyle="rgb(0,0,255)"
+            break;
+            }
+          ctx.fillRect(x,y,width,height)
+
+          }
+        },
+      };
+
+
+      window.addEventListener("contextmenu", e => e.preventDefault());
+      WebAssembly.instantiateStreaming(
+        fetch("zig-out/bin/sandbox_wasm.wasm"),
+        importObject
+      ).then((result) => {
+        xports = result.instance.exports;
+        console.log(xports);
+          xports.init()
+        memory = xports.memory.buffer;
+          setInterval(() => { xports.draw_grid(); }, 1000/60);
+          setInterval(() => { xports.update(); }, 1000/30);
+function mouseMoveHandler(e) {
+  const relativeX = e.clientX - canvas.offsetLeft;
+  const relativeY = e.clientY - canvas.offsetTop;
+  if (relativeX > 0 && relativeX < canvas.width) {
+  if (relativeY > 0 && relativeY < canvas.height) {
+                  xports.handleMouseMove(relativeX,relativeY,e.buttons)
+
+  }
+  }
+}
+function keyBoardHandler(e) {
+                 xports.handleKeyboard(e.key.charCodeAt(0));
+            console.log(e.key)
+            active_brush = xports.active_brush();
+
+}
+      document.addEventListener("mousemove", mouseMoveHandler, false);
+      document.addEventListener("keypress", keyBoardHandler, false);
+     });
+    </script>
+  </body>
+</html>
