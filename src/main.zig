@@ -79,7 +79,7 @@ fn drawGrid(state: simulation.State) void {
 }
 
 pub fn main() !void {
-    rl.InitWindow(sW, sH, "raylib example");
+    rl.InitWindow(sW, sH, "sandbox game");
     rl.SetTargetFPS(60);
 
     var x: usize = 0;
