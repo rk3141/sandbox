@@ -65,67 +65,19 @@ pub fn runPhysics(state: *State) void {
                         if (state.gridcell[index + GRID_W] == .Empty) {
                             new_state.gridcell[index] = .Empty;
                             new_state.gridcell[index + GRID_W] = .Sand;
-                        } else if (state.gridcell[index + GRID_W] == .Water) {
-                            new_state.gridcell[index] = .Water;
-                            new_state.gridcell[index + GRID_W] = .Sand;
                         } else {
                             const left = rand.boolean();
                             if (left and x > 0 and state.gridcell[index + GRID_W - 1] == .Empty) {
                                 new_state.gridcell[index] = .Empty;
                                 new_state.gridcell[index + GRID_W - 1] = .Sand;
-                            } else if (left and x > 0 and state.gridcell[index + GRID_W - 1] == .Water) {
-                                new_state.gridcell[index] = .Water;
-                                new_state.gridcell[index + GRID_W - 1] = .Sand;
                             } else if (!left and x < GRID_W - 1 and state.gridcell[index + GRID_W + 1] == .Empty) {
                                 new_state.gridcell[index] = .Empty;
-                                new_state.gridcell[index + GRID_W + 1] = .Sand;
-                            } else if (!left and x < GRID_W - 1 and state.gridcell[index + GRID_W + 1] == .Water) {
-                                new_state.gridcell[index] = .Water;
                                 new_state.gridcell[index + GRID_W + 1] = .Sand;
                             }
                         }
                     },
                     .Generator => {
                         new_state.gridcell[index + GRID_W] = .Sand;
-                    },
-                    .Water => {
-                        new_state.gridcell[index] = .Empty;
-                        if (state.gridcell[index + GRID_W] == .Empty) {
-                            new_state.gridcell[index + GRID_W] = .Water;
-                        } else {
-                            const left = rand.boolean();
-                            const right_empty =
-                                x < GRID_W - 1 and state.gridcell[index + 1] == .Empty;
-                            const left_empty =
-                                x > 0 and state.gridcell[index - 1] == .Empty;
-                            const bleft =
-                                x > 0 and state.gridcell[index + GRID_W - 1] == .Empty;
-                            const bright =
-                                x < GRID_W - 1 and state.gridcell[index + GRID_W + 1] == .Empty;
-                            if (left_empty and right_empty) {
-                                if (left) {
-                                    new_state.gridcell[index - 1] = .Water;
-                                } else {
-                                    new_state.gridcell[index + 1] = .Water;
-                                }
-                            } else if (left_empty) {
-                                new_state.gridcell[index - 1] = .Water;
-                            } else if (right_empty) {
-                                new_state.gridcell[index + 1] = .Water;
-                            } else if (bleft and bright) {
-                                if (left) {
-                                    new_state.gridcell[index + GRID_W - 1] = .Water;
-                                } else {
-                                    new_state.gridcell[index + GRID_W + 1] = .Water;
-                                }
-                            } else if (left_empty) {
-                                new_state.gridcell[index + GRID_W - 1] = .Water;
-                            } else if (right_empty) {
-                                new_state.gridcell[index + GRID_W + 1] = .Water;
-                            } else {
-                                new_state.gridcell[index] = .Water;
-                            }
-                        }
                     },
                     else => {},
                 }

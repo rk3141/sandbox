@@ -47,7 +47,6 @@ export fn draw_grid() void {
             },
             .Generator => DrawRectangle(x, y, constants.CELLSIZE, constants.CELLSIZE, PURPLE),
             .Wall => DrawRectangle(x, y, constants.CELLSIZE, constants.CELLSIZE, RED),
-            .Water => DrawRectangle(x, y, constants.CELLSIZE, constants.CELLSIZE, BLUE),
 
             else => DrawRectangle(x, y, constants.CELLSIZE, constants.CELLSIZE, BLACK),
         }
@@ -84,7 +83,6 @@ export fn handleKeyboard(key: usize) void {
         '1' => state.active_brush = .Sand,
         '2' => state.active_brush = .Generator,
         '3' => state.active_brush = .Wall,
-        '4' => state.active_brush = .Water,
         else => {},
     }
 }

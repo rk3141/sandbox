@@ -1,6 +1,11 @@
 const constsants = @import("constants.zig");
 
-pub const Cell = enum { Empty, Sand, Generator, Wall, Water };
+pub const Cell = enum {
+    Empty,
+    Sand,
+    Generator,
+    Wall,
+};
 pub const State = struct {
     paused: bool = true,
     gridcell: [constsants.GRIDSIZE]Cell = undefined,

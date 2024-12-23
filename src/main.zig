@@ -52,9 +52,6 @@ fn handleKeyboard(state: *simulation.State) void {
     if (rl.IsKeyDown(rl.KEY_THREE)) {
         state.active_brush = .Wall;
     }
-    if (rl.IsKeyDown(rl.KEY_FOUR)) {
-        state.active_brush = .Water;
-    }
 }
 
 fn drawGrid(state: simulation.State) void {
@@ -75,7 +72,6 @@ fn drawGrid(state: simulation.State) void {
             },
             .Generator => rl.DrawRectangle(x, y, CELLSIZE, CELLSIZE, rl.PURPLE),
             .Wall => rl.DrawRectangle(x, y, CELLSIZE, CELLSIZE, rl.RED),
-            .Water => rl.DrawRectangle(x, y, CELLSIZE, CELLSIZE, rl.BLUE),
 
             else => rl.DrawRectangle(x, y, CELLSIZE, CELLSIZE, rl.BLACK),
         }
