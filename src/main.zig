@@ -22,11 +22,13 @@ const sH = constants.sH;
 fn handleMouseClick(state: *simulation.State) void {
     const x = rl.GetMouseX();
     const y = rl.GetMouseY();
-    const gc = simulation.grid_coords_from_xy(@intCast(x), @intCast(y));
-    if (rl.IsMouseButtonDown(rl.MOUSE_BUTTON_LEFT)) {
-        state.gridcell[gc] = state.active_brush;
-    } else if (rl.IsMouseButtonDown(rl.MOUSE_BUTTON_RIGHT)) {
-        state.gridcell[gc] = .Empty;
+    if (x > 0 and x < sW and y > 0 and y < sH) {
+        const gc = simulation.grid_coords_from_xy(@intCast(x), @intCast(y));
+        if (rl.IsMouseButtonDown(rl.MOUSE_BUTTON_LEFT)) {
+            state.gridcell[gc] = state.active_brush;
+        } else if (rl.IsMouseButtonDown(rl.MOUSE_BUTTON_RIGHT)) {
+            state.gridcell[gc] = .Empty;
+        }
     }
 }
 fn handleKeyboard(state: *simulation.State) void {
