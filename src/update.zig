@@ -51,14 +51,14 @@ var prng = @import("std").rand.DefaultPrng.init(0x40808);
 const rand = prng.random();
 pub fn runPhysics(state: *State) void {
     var new_state = State{};
-    new_state = state.*;
+
+    var x: usize = 0;
+    var y: usize = 0;
 
     var index: usize = 0;
     while (index < GRIDSIZE) : (index += 1) {
-        const x = @mod(index, GRID_W);
-        const y = @divFloor(index, GRID_W);
-        new_state.gridcell[index] = state.gridcell[index];
         if (state.gridcell[index] != .Empty) {
+            new_state.gridcell[index] = state.gridcell[index];
             if (y < GRID_H - 1) {
                 switch (state.gridcell[index]) {
                     .Sand => {
@@ -131,6 +131,11 @@ pub fn runPhysics(state: *State) void {
                 }
             }
         }
-        state.* = new_state;
+        x += 1;
+        if (@mod(x, GRID_W) == 0) {
+            y += 1;
+            x = 0;
+        }
     }
+    @memcpy(&state.gridcell, &new_state.gridcell);
 }

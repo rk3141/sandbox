@@ -26,6 +26,14 @@ fn handleMouseClick(state: *simulation.State) void {
         const gc = simulation.grid_coords_from_xy(@intCast(x), @intCast(y));
         if (rl.IsMouseButtonDown(rl.MOUSE_BUTTON_LEFT)) {
             state.gridcell[gc] = state.active_brush;
+            state.gridcell[gc + 1] = state.active_brush;
+            state.gridcell[gc - 1] = state.active_brush;
+            state.gridcell[gc - GRID_W - 1] = state.active_brush;
+            state.gridcell[gc - GRID_W + 1] = state.active_brush;
+            state.gridcell[gc + GRID_W - 1] = state.active_brush;
+            state.gridcell[gc + GRID_W + 1] = state.active_brush;
+            state.gridcell[gc + GRID_W] = state.active_brush;
+            state.gridcell[gc - GRID_W] = state.active_brush;
         } else if (rl.IsMouseButtonDown(rl.MOUSE_BUTTON_RIGHT)) {
             state.gridcell[gc] = .Empty;
         }
@@ -82,20 +90,11 @@ fn drawGrid(state: simulation.State) void {
 
 pub fn main() !void {
     rl.InitWindow(sW, sH, "sandbox game");
-    rl.SetTargetFPS(60);
-
-    var x: usize = 0;
-    var y: usize = 0;
+    // rl.SetTargetFPS(60);
 
     var state = simulation.State{};
 
-    while (x < sW) : (x += sW / CELLSIZE) {
-        while (y < sH) : (y += sH / CELLSIZE) {
-            state.gridcell[
-                simulation.grid_coords_from_xy(x, y)
-            ] = .Empty;
-        }
-    }
+    @memset(&state.gridcell, .Empty);
 
     while (!rl.WindowShouldClose()) {
         // Begin Drawing
